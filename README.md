@@ -4,8 +4,8 @@ This package adds the ability to save schemaless metadata to entries.
 
 ## Why?
 
-Sometimes you'll need to attach additional information to your entry without creating a corresponding field in Craft. A
-Common examples are saving an identifier of the entry in another system, keeping track of post views, or flagging an entry as seeded for later removal. 
+Sometimes you'll need to attach additional information to your entry without creating a corresponding field in Craft. 
+Common examples include saving an identifier of the entry in another system, keeping track of post views, or flagging an entry as seeded for later removal. 
 
 One option would be to create a read-only field on Craft using a plugin that allows for hidden/read-only field types.
 However, there are multiple cons to this approach:
@@ -37,8 +37,7 @@ php craft plugin/install craft-entry-meta
 
 ## Usage
 
-`$entry` below refers to an entry element (`craft\elements\Entry`)
-Note that element must be already saved in order to use metadata methods.
+`$entry` below refers to an entry element (`craft\elements\Entry`). Note that the element must be already saved in order to use metadata methods.
 
 Set metadata (will replace existing metadata):
 
@@ -104,7 +103,7 @@ $instance->query
     ])
 ->all();
 ```
-### Metadata on Entry edit
+### Metadata on entry edit page
 By default metadata is rendered on the sidebar along with Craft's metadata (status, created at, updated at).
 You can disable this behaviour via the plugin settings.
 
