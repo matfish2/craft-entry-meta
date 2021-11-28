@@ -1,0 +1,36 @@
+{
+  "name": "matfish/craft-entry-meta",
+  "description": "Add metadata to entries",
+  "type": "craft-plugin",
+  "keywords": [
+    "entries",
+    "metadata"
+  ],
+  "license": "proprietary",
+  "authors": [
+    {
+      "name": "Mat Fish",
+      "homepage": "https://github.com/matfish2/craft-entry-meta"
+    }
+  ],
+  "support": {
+    "email": "matfish2@gmail.com",
+    "issues": "https://github.com/matfish2/craft-entry-meta/issues?state=open",
+    "source": "https://github.com/matfish2/craft-entry-meta",
+    "docs": "https://github.com/matfish2/craft-entry-meta/blob/master/README.md"
+  },
+  "require": {
+    "craftcms/cms": "^3.7.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "matfish\\EntryMeta\\": "src/"
+    }
+  },
+  "extra": {
+    "name": "Entry Meta",
+    "handle": "entry-meta",
+    "changelogUrl": "https://raw.githubusercontent.com/matfish2/craft-entry-meta/master/CHANGELOG.md",
+    "class": "matfish\\EntryMeta\\EntryMeta"
+  }
+}

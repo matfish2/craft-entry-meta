@@ -1,0 +1,8 @@
+{% for key,value in data %}
+    <div class="data">
+        <h5 class="heading">{{ key }}</h5>
+        <div class="value">
+            <span>{{ value | json_encode }}</span>
+        </div>
+    </div>
+{% endfor %}
