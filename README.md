@@ -91,7 +91,7 @@ Entry::find()->whereMetadata('views',0,'>');
 ```php
 Entry::find()->whereMetadata('views',0,'>')->orderByMetadata('views',false, true);
 ```
-The second boolean argument is whether to sort is ascending order. Defaults to `true`
+The second boolean argument is whether to sort in ascending order. Defaults to `true`
 
 The third boolean argument is whether the value is an integer. Defaults to `false`
 
