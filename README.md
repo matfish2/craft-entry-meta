@@ -32,7 +32,7 @@ composer require matfish/craft-entry-meta
 2. Install the plugin:
 
 ```
-php craft plugin/install craft-entry-meta
+php craft plugin/install entry-meta
 ```
 
 ## Usage
