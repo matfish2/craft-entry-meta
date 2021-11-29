@@ -70,7 +70,7 @@ $entry->getEntryMetadata('foo');
 Or using Twig:
 
 ```twig
-{{entry.entryMetadata('foo')}}
+{{entry.getEntryMetadata('foo')}}
 ```
 
 ### Query by metadata
