@@ -94,6 +94,11 @@ The second boolean argument is whether to sort is ascending order. Defaults to `
 
 The third boolean argument is whether the value is an integer. Defaults to `false`
 
+#### Nested data
+You can search and sort by nested data using the `.` syntax:
+```php
+Entry::find()->whereMetadata('foo.bar','baz')->orderByMetadata('foobar.baz');
+```
 ### Metadata on entry edit page
 By default metadata is rendered on the sidebar along with Craft's metadata (status, created at, updated at).
 You can disable this behaviour via the plugin settings.
