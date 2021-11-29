@@ -81,7 +81,8 @@ You can query by metadata on `craft\records\Entry` using the following methods:
 ```php
 Entry::find()->whereMetadata('foo','bar');
 ```
-For more complex queries you can also chain `orWhereMetadata` and `andWhereMetadata`
+For more complex queries you can also chain `orWhereMetadata` and `andWhereMetadata`.
+
 The method defaults to the `=` operand, which you can override on the third argument. E.g:
 ```php
 Entry::find()->whereMetadata('views',0,'>');
