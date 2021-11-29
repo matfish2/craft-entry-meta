@@ -4,13 +4,15 @@ namespace matfish\EntryMeta;
 
 use Craft;
 use craft\base\Plugin;
+use craft\db\ActiveQuery;
 use craft\elements\db\ElementQuery;
 use craft\elements\Entry;
 use craft\events\PopulateElementEvent;
-use matfish\EntryMeta\behaviors\EntryMetaBehavior;
+use matfish\EntryMeta\behaviors\EntryActiveQueryBehavior;
+use matfish\EntryMeta\behaviors\EntryElementBehavior;
 use matfish\EntryMeta\models\Settings;
-use matfish\EntryMeta\services\EntryMetaQueryService;
 use yii\base\Event;
+use craft\records\Entry as EntryRecord;
 
 class EntryMeta extends Plugin
 {
@@ -21,9 +23,11 @@ class EntryMeta extends Plugin
     {
         parent::init();
 
-        $this->setComponents([
-            'query' => EntryMetaQueryService::class
-        ]);
+        Event::on(ActiveQuery::class, ActiveQuery::EVENT_INIT, function ($e) {
+            if ($e->sender->modelClass === EntryRecord::class) {
+                $e->sender->attachBehaviors([EntryActiveQueryBehavior::class]);
+            }
+        });
 
         /**
          * Attach a behavior after an entry has been loaded from the database (populated).
@@ -32,7 +36,7 @@ class EntryMeta extends Plugin
             $element = $event->element;
 
             if ($element instanceof Entry) {
-                $element->attachBehavior('metadata', EntryMetaBehavior::class);
+                $element->attachBehavior('metadata', EntryElementBehavior::class);
             }
         });
 

@@ -75,34 +75,25 @@ Or using Twig:
 
 ### Query by metadata
 
-Get the plugin instance:
-```php
-$instance = matfish\EntryMeta\EntryMeta::getInstance();
-```
-Run query:
-```php
-$instance->query
-->findEntriesByMetadata(['foo'=>'bar'])
-->all();
-```
+You can query by metadata on `craft\records\Entry` using the following methods:
 
-You can also query nested structures using the `.` syntax:
-
+#### Filter by metadata
 ```php
-$instance->query
-->findEntriesByMetadata(['foo.baz'=>'bar'])
-->all();
+Entry::find()->whereMetadata('foo','bar');
 ```
-
-Query by multiple nodes (AND relations):
+For more complex queries you can also chain `orWhereMetadata` and `andWhereMetadata`
+The method defaults to the `=` operand, which you can override on the third argument. E.g:
 ```php
-$instance->query
-->findEntriesByMetadata([
-    'foo.baz'=>'bar',
-    'foobar'=> true
-    ])
-->all();
+Entry::find()->whereMetadata('views',0,'>');
 ```
+#### Sort by metadata
+```php
+Entry::find()->whereMetadata('views',0,'>')->orderByMetadata('views',false, true);
+```
+The second boolean argument is whether to sort is ascending order. Defaults to `true`
+
+The third boolean argument is whether the value is an integer. Defaults to `false`
+
 ### Metadata on entry edit page
 By default metadata is rendered on the sidebar along with Craft's metadata (status, created at, updated at).
 You can disable this behaviour via the plugin settings.

@@ -6,7 +6,7 @@ use Craft;
 use craft\db\Query;
 use yii\base\Behavior;
 
-class EntryMetaBehavior extends Behavior
+class EntryElementBehavior extends Behavior
 {
     public function setEntryMetadata(array $data)
     {
