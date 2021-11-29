@@ -23,7 +23,7 @@ class EntryMetaQueryService
 
         $first = true;
 
-        foreach ($params as $key=>$value) {
+        foreach ($params as $key => $value) {
             $method = $first ? 'where' : 'andWhere';
             $q = $q->{$method}($this->_getCondition($key, $value));
             $first = false;
@@ -60,7 +60,7 @@ class EntryMetaQueryService
             return $value ? 'true' : 'false';
         }
 
-        if (is_string($value) || $this->dbDriver===self::POSTGRES) {
+        if (is_string($value) || $this->dbDriver === self::POSTGRES) {
             return "'{$value}'";
         }
 
@@ -69,14 +69,22 @@ class EntryMetaQueryService
 
     private function _transformKey($key)
     {
-        if ($this->dbDriver===self::POSTGRES) {
+        if ($this->dbDriver === self::POSTGRES) {
             $keys = explode('.', $key);
-            $keys = array_map(function($key) {
+            $keys = array_map(function ($key) {
                 return "'{$key}'";
-            },$keys);
-            $nested = count($keys)>1;
-            $key = implode('->', $keys);
-            $key = ($nested ? '->':'->>') . $key;
+            }, $keys);
+            $nested = count($keys) > 1;
+
+            if ($nested) {
+                $lastSegment = array_pop($keys);
+                $key = implode('->', $keys);
+                $key .= '->>' . $lastSegment;
+                $key = '->' . $key;
+            } else {
+                $key = $keys[0];
+                $key = '->>' . $key;
+            }
         }
 
         return $key;
