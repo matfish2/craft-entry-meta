@@ -11,6 +11,7 @@ use craft\events\PopulateElementEvent;
 use matfish\EntryMeta\behaviors\EntryActiveQueryBehavior;
 use matfish\EntryMeta\behaviors\EntryElementBehavior;
 use matfish\EntryMeta\models\Settings;
+use matfish\EntryMeta\twig\EntryMetaExtension;
 use yii\base\Event;
 use craft\records\Entry as EntryRecord;
 
@@ -23,33 +24,11 @@ class EntryMeta extends Plugin
     {
         parent::init();
 
-        Event::on(ActiveQuery::class, ActiveQuery::EVENT_INIT, function ($e) {
-            if ($e->sender->modelClass === EntryRecord::class) {
-                $e->sender->attachBehaviors([EntryActiveQueryBehavior::class]);
-            }
-        });
+        $this->registerElementBehavior();
+        $this->registerQueryBehavior();
 
-        /**
-         * Attach a behavior after an entry has been loaded from the database (populated).
-         */
-        Event::on(ElementQuery::class, ElementQuery::EVENT_AFTER_POPULATE_ELEMENT, function (PopulateElementEvent $event) {
-            $element = $event->element;
-
-            if ($element instanceof Entry) {
-                $element->attachBehavior('metadata', EntryElementBehavior::class);
-            }
-        });
-
-        if ($this->settings->displayMetadataInCp) {
-            Craft::$app->getView()->hook(self::CP_HOOK, function (array &$context) {
-
-                $entry = $context['entry'];
-                $meta = $entry->getEntryMetadata();
-
-                return Craft::$app->view->renderTemplate('entry-meta/_meta', [
-                    'data' => $meta
-                ]);
-            });
+        if (Craft::$app->request->getIsCpRequest() && $this->settings->displayMetadataInCp) {
+            $this->registerCpMetaHook();
         }
     }
 
@@ -58,4 +37,38 @@ class EntryMeta extends Plugin
         return new Settings();
     }
 
+    private function registerElementBehavior()
+    {
+        Event::on(ActiveQuery::class, ActiveQuery::EVENT_INIT, function ($e) {
+            if ($e->sender->modelClass === EntryRecord::class) {
+                $e->sender->attachBehaviors([EntryActiveQueryBehavior::class]);
+            }
+        });
+    }
+
+    private function registerQueryBehavior()
+    {
+        Event::on(ElementQuery::class, ElementQuery::EVENT_AFTER_POPULATE_ELEMENT, function (PopulateElementEvent $event) {
+            $element = $event->element;
+
+            if ($element instanceof Entry) {
+                $element->attachBehavior('metadata', EntryElementBehavior::class);
+            }
+        });
+
+    }
+
+    private function registerCpMetaHook()
+    {
+        Craft::$app->view->registerTwigExtension(new EntryMetaExtension());
+
+        Craft::$app->getView()->hook(self::CP_HOOK, function (array &$context) {
+            $entry = $context['entry'];
+            $meta = $entry->getEntryMetadata();
+
+            return Craft::$app->view->renderTemplate('entry-meta/_meta', [
+                'data' => $meta
+            ]);
+        });
+    }
 }
