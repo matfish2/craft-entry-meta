@@ -1,7 +1,7 @@
 # Release Notes for Entry Meta
 
-## 1.0.0 - 2021-12-3
-## Added
+## 1.0.0 - 2021-12-03
+### Added
 - Publish stable release [#1](https://github.com/matfish2/craft-entry-meta/issues/1)
 
 ## 1.0.0-rc.4 - 2021-12-01
