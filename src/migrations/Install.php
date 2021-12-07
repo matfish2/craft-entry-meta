@@ -25,11 +25,6 @@ class Install extends Migration
         }
     }
 
-    private function _pluginExistsInProjectConfig(): bool
-    {
-        return Craft::$app->projectConfig->get('plugins.entry-meta', true) !== null;
-    }
-
     private function _columnExists(): bool
     {
         return Craft::$app->db->columnExists("{{%entries}}", EntryMeta::COLUMN_NAME);
