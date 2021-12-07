@@ -10,7 +10,7 @@ class Install extends Migration
 {
     public function safeUp()
     {
-        if (!$this->_pluginExistsInProjectConfig() && !$this->_columnExists()) {
+        if (!$this->_columnExists()) {
             echo "> Adding column " . EntryMeta::COLUMN_NAME . " to entries table..." . PHP_EOL;
             $columnType = Craft::$app->db->driverName==='pgsql' ? 'jsonb' : 'text';
             Craft::$app->db->createCommand()->addColumn("{{%entries}}", EntryMeta::COLUMN_NAME, $columnType)->execute();
@@ -19,7 +19,7 @@ class Install extends Migration
 
     public function safeDown()
     {
-        if ($this->_pluginExistsInProjectConfig() && $this->_columnExists()) {
+        if ($this->_columnExists()) {
             echo "> Removing column " . EntryMeta::COLUMN_NAME . " from entries table..." . PHP_EOL;
             Craft::$app->db->createCommand()->dropColumn("{{%entries}}", EntryMeta::COLUMN_NAME)->execute();
         }
