@@ -1,6 +1,6 @@
 # Release Notes for Entry Meta
 
-## 1.0.1 - 2021-12-04
+## 1.0.1 - 2021-12-07
 ### Fixed
 - Ensure install migration runs on new environment [#2](https://github.com/matfish2/craft-entry-meta/issues/2)
 
