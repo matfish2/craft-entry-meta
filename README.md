@@ -104,7 +104,7 @@ Entry::find()->whereMetadata('foo.bar','baz')->orderByMetadata('foobar.baz');
 By default metadata is rendered on the sidebar along with Craft's metadata (status, created at, updated at).
 You can disable this behaviour via the plugin settings.
 
-Crate a `config\entry-meta.php` file:
+Create a `config\entry-meta.php` file:
 ```php
 return [
    'displayMetadataInCp'=>false
