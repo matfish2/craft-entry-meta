@@ -37,7 +37,7 @@ class EntryActiveQueryBehavior extends Behavior
         return $this->_whereMetadata($key, $value, $operand, 'andWhere');
     }
 
-    public function orderByMetadata($key, $asc, $numeric = false)
+    public function orderByMetadata($key, $asc = true, $numeric = false)
     {
         $cast = $numeric ? 'integer' : null;
         $dir = $asc ? SORT_ASC : SORT_DESC;

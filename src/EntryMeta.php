@@ -14,6 +14,7 @@ use matfish\EntryMeta\models\Settings;
 use matfish\EntryMeta\twig\EntryMetaExtension;
 use yii\base\Event;
 use craft\records\Entry as EntryRecord;
+use craft\base\Model;
 
 class EntryMeta extends Plugin
 {
@@ -32,7 +33,7 @@ class EntryMeta extends Plugin
         }
     }
 
-    protected function createSettingsModel()
+    protected function createSettingsModel() : ?Model
     {
         return new Settings();
     }

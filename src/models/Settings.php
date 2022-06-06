@@ -8,7 +8,7 @@ class Settings extends Model
 {
     public $displayMetadataInCp = true;
 
-    public function rules()
+    public function rules() : array
     {
         return [
             [['displayMetadataInCp'], 'bool']
