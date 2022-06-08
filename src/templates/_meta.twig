@@ -1,8 +1,10 @@
-{% for key,value in data %}
-    <div class="data">
-        <h5 class="heading">{{ key | keyForHumans }}</h5>
-        <div class="value">
-            <span>{{ value | valueForHumans | raw }}</span>
+<dl class="meta read-only entry-meta-plugin">
+    {% for key,value in data %}
+        <div class="data">
+            <dt class="heading">{{ key | keyForHumans }}</dt>
+            <dd class="value">
+                <span>{{ value | valueForHumans | raw }}</span>
+            </dd>
         </div>
-    </div>
-{% endfor %}
+    {% endfor %}
+</dl>

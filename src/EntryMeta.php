@@ -3,10 +3,14 @@
 namespace matfish\EntryMeta;
 
 use Craft;
+use craft\base\Element;
 use craft\base\Plugin;
+use craft\controllers\ElementsController;
 use craft\db\ActiveQuery;
 use craft\elements\db\ElementQuery;
 use craft\elements\Entry;
+use craft\events\DefineElementEditorHtmlEvent;
+use craft\events\DefineHtmlEvent;
 use craft\events\PopulateElementEvent;
 use matfish\EntryMeta\behaviors\EntryActiveQueryBehavior;
 use matfish\EntryMeta\behaviors\EntryElementBehavior;
@@ -19,7 +23,6 @@ use craft\base\Model;
 class EntryMeta extends Plugin
 {
     const COLUMN_NAME = 'metadata';
-    const CP_HOOK = 'cp.entries.edit.meta';
 
     public function init()
     {
@@ -28,12 +31,12 @@ class EntryMeta extends Plugin
         $this->registerElementBehavior();
         $this->registerQueryBehavior();
 
-        if (Craft::$app->request->getIsCpRequest() && $this->settings->displayMetadataInCp) {
+        if ($this->settings->displayMetadataInCp && Craft::$app->request->getIsCpRequest()) {
             $this->registerCpMetaHook();
         }
     }
 
-    protected function createSettingsModel() : ?Model
+    protected function createSettingsModel(): ?Model
     {
         return new Settings();
     }
@@ -59,17 +62,21 @@ class EntryMeta extends Plugin
 
     }
 
-    private function registerCpMetaHook()
+    private function registerCpMetaHook(): void
     {
         Craft::$app->view->registerTwigExtension(new EntryMetaExtension());
 
-        Craft::$app->getView()->hook(self::CP_HOOK, function (array &$context) {
-            $entry = $context['entry'];
-            $meta = $entry->getEntryMetadata();
-
-            return Craft::$app->view->renderTemplate('entry-meta/_meta', [
-                'data' => $meta
-            ]);
-        });
+        Event::on(
+            Entry::class,
+            Element::EVENT_DEFINE_SIDEBAR_HTML,
+            function (DefineHtmlEvent $event) {
+                $entry = $event->sender;
+                $meta = $entry->getEntryMetadata();
+                $template = Craft::$app->view->renderTemplate('entry-meta/_meta', [
+                    'data' => $meta
+                ]);
+                $event->html .= $template;
+            }
+        );
     }
 }
