@@ -1,5 +1,8 @@
 # Release Notes for Entry Meta
 
+## 2.0.1 - 2022-06-08
+- Craft 4: Resolve removed CP meta hook [#10172](https://github.com/craftcms/cms/issues/10172#issuecomment-1149443831)
+
 ## 2.0.0 - 2022-06-06
 - Craft 4: Initial Release
 
