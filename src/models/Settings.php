@@ -9,8 +9,8 @@ use craft\db\ActiveRecord;
 class Settings extends Model
 {
     public bool $displayMetadataInCp = true;
-    public array $enabledFor = [];
-    public array $enabledForCustom = [];
+    public $enabledFor = [];
+    public $enabledForCustom = [];
 
     public function rules() : array
     {

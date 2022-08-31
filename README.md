@@ -1,6 +1,6 @@
-> Version 3 is now out (for Craft 4) extending metadata capability from entries to all element types!
+> Version 1.1 is now out (for Craft 3) extending metadata capability from entries to all element types!
 > Plugin name was accordingly changed from Entry Meta to Element Meta.
-> To migrate from Version 2 simply change column name on `entries` table from `metadata` to `emMetadata` and select `Entry` on the settings page.
+> To migrate from Version 1.0 simply change column name on `entries` table from `metadata` to `emMetadata` and select `Entry` on the settings page.
 # Element Meta
 
 This package adds the ability to save schemaless metadata to all element types, including custom elements.

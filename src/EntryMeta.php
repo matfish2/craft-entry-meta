@@ -26,7 +26,7 @@ class EntryMeta extends Plugin
 {
     public const COLUMN_NAME = 'emMetadata';
 
-    public bool $hasCpSettings = true;
+    public $hasCpSettings = true;
 
     public function init()
     {
@@ -140,8 +140,10 @@ class EntryMeta extends Plugin
                 $res[] = ClassesMap::LOOK_UP[$key];
             }
 
-            foreach ($this->settings->enabledForCustom as $val) {
-                $res[] = array_reverse($val);
+            if (is_array($this->settings->enabledForCustom)) {
+                foreach ($this->settings->enabledForCustom as $val) {
+                    $res[] = array_reverse($val);
+                }
             }
 
             return $res;
@@ -157,8 +159,11 @@ class EntryMeta extends Plugin
                 $res[] = ClassesMap::LOOK_UP[$key][0];
             }
 
-            foreach ($this->settings->enabledForCustom as $val) {
-                $res[] = $val[1];
+            if (is_array($this->settings->enabledForCustom)) {
+                foreach ($this->settings->enabledForCustom as $val) {
+                    $res[] = $val[1];
+                }
+
             }
 
             return $res;
@@ -175,8 +180,10 @@ class EntryMeta extends Plugin
                 $res[] = ClassesMap::LOOK_UP[$key][1];
             }
 
-            foreach ($this->settings->enabledForCustom as $val) {
-                $res[] = $val[0];
+            if (is_array($this->settings->enabledForCustom)) {
+                foreach ($this->settings->enabledForCustom as $val) {
+                    $res[] = $val[0];
+                }
             }
 
             return $res;
@@ -194,10 +201,12 @@ class EntryMeta extends Plugin
             $migrator->add($table);
         }
 
-        foreach ($this->settings->enabledForCustom as $val) {
-            $table = $detector->detect($val[1]);
+        if (is_array($this->settings->enabledForCustom)) {
+            foreach ($this->settings->enabledForCustom as $val) {
+                $table = $detector->detect($val[1]);
 
-            $migrator->add($table);
+                $migrator->add($table);
+            }
         }
 
         $cache = \Craft::$app->cache;
@@ -239,22 +248,28 @@ class EntryMeta extends Plugin
     {
         Craft::$app->view->registerTwigExtension(new EntryMetaExtension());
 
-        $enabled = $this->getEnabledElements();
+        $lookup = [
+            'user' => 'cp.users.edit.details',
+            'entry' => 'cp.entries.edit.details',
+            'category' => 'cp.categories.edit.details',
+            'asset' => 'cp.assets.edit.details',
+        ];
+
+        $enabled = $this->getEnabled();
 
         foreach ($enabled as $el) {
+            if (isset($lookup[$el])) {
+                Craft::$app->getView()->hook($lookup[$el], function (array &$context) use ($el) {
 
-            Event::on(
-                $el,
-                Element::EVENT_DEFINE_SIDEBAR_HTML,
-                function (DefineHtmlEvent $event) {
-                    $entry = $event->sender;
+                    $entry = $el==='asset' ? $context['element'] : $context[$el];
+
                     $meta = $entry->getElementMetadata();
-                    $template = Craft::$app->view->renderTemplate('entry-meta/_meta', [
+
+                    return Craft::$app->view->renderTemplate('entry-meta/_meta', [
                         'data' => $meta
                     ]);
-                    $event->html .= $template;
-                }
-            );
+                });
+            }
         }
 
     }
