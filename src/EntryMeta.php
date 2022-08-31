@@ -2,6 +2,7 @@
 
 namespace matfish\EntryMeta;
 
+use Closure;
 use Craft;
 use craft\base\Element;
 use craft\base\Plugin;
@@ -96,80 +97,90 @@ class EntryMeta extends Plugin
 
     protected function getEnabled(): array
     {
-        $res = [];
-        $migrator = new MetadataColumnMigrator();
-        $detector = new MetadataTableDetector();
-        foreach (array_keys(ClassesMap::LOOK_UP) as $key) {
+        return $this->eMcache('emEnabled', function () {
+            $res = [];
+            $migrator = new MetadataColumnMigrator();
+            $detector = new MetadataTableDetector();
+            foreach (array_keys(ClassesMap::LOOK_UP) as $key) {
 
-            try {
-                $table = $detector->detect($key);
-            } catch (\Exception $e) {
-                continue;
+                try {
+                    $table = $detector->detect($key);
+                } catch (\Exception $e) {
+                    continue;
+                }
+
+                if ($migrator->columnExists($table)) {
+                    $res[] = $key;
+                }
             }
 
-            if ($migrator->columnExists($table)) {
-                $res[] = $key;
-            }
-        }
-
-        return $res;
+            return $res;
+        });
     }
 
     private function getActiveRecordFromElementClass($elClass)
     {
-        foreach ($this->getAllEnabled() as $val) {
-            if ($val[1] === $elClass) {
-                return $val[0];
+        return $this->eMcache('emActiveRecordFromElementClass' . $elClass, function () use ($elClass) {
+            foreach ($this->getAllEnabled() as $val) {
+                if ($val[1] === $elClass) {
+                    return $val[0];
+                }
             }
-        }
 
-        throw new Exception("Cannot retrieve active record class for element {$elClass}");
+            throw new Exception("Cannot retrieve active record class for element {$elClass}");
+        });
     }
 
     public function getAllEnabled()
     {
-        $res = [];
+        return $this->eMcache('emAllEnabled', function () {
+            $res = [];
 
-        foreach ($this->getEnabled() as $key) {
-            $res[] = ClassesMap::LOOK_UP[$key];
-        }
+            foreach ($this->getEnabled() as $key) {
+                $res[] = ClassesMap::LOOK_UP[$key];
+            }
 
-        foreach ($this->settings->enabledForCustom as $val) {
-            $res[] = array_reverse($val);
-        }
+            foreach ($this->settings->enabledForCustom as $val) {
+                $res[] = array_reverse($val);
+            }
 
-        return $res;
+            return $res;
+        });
     }
 
     public function getEnabledActiveRecords(): array
     {
-        $res = [];
+        return $this->eMcache('emEnabledActiveRecords', function () {
+            $res = [];
 
-        foreach ($this->getEnabled() as $key) {
-            $res[] = ClassesMap::LOOK_UP[$key][0];
-        }
+            foreach ($this->getEnabled() as $key) {
+                $res[] = ClassesMap::LOOK_UP[$key][0];
+            }
 
-        foreach ($this->settings->enabledForCustom as $val) {
-            $res[] = $val[1];
-        }
+            foreach ($this->settings->enabledForCustom as $val) {
+                $res[] = $val[1];
+            }
 
-        return $res;
+            return $res;
+        });
     }
 
 
     private function getEnabledElements(): array
     {
-        $res = [];
+        return $this->eMcache('emEnabledElements', function () {
+            $res = [];
 
-        foreach ($this->getEnabled() as $key) {
-            $res[] = ClassesMap::LOOK_UP[$key][1];
-        }
+            foreach ($this->getEnabled() as $key) {
+                $res[] = ClassesMap::LOOK_UP[$key][1];
+            }
 
-        foreach ($this->settings->enabledForCustom as $val) {
-            $res[] = $val[0];
-        }
+            foreach ($this->settings->enabledForCustom as $val) {
+                $res[] = $val[0];
+            }
 
-        return $res;
+            return $res;
+        });
     }
 
     public function afterSaveSettings(): void
@@ -188,6 +199,12 @@ class EntryMeta extends Plugin
 
             $migrator->add($table);
         }
+
+        $cache = \Craft::$app->cache;
+        $cache->delete('emEnabledElements');
+        $cache->delete('emEnabledActiveRecords');
+        $cache->delete('emAllEnabled');
+        $cache->delete('emEnabled');
 
         parent::afterSaveSettings();
     }
@@ -240,6 +257,13 @@ class EntryMeta extends Plugin
             );
         }
 
+    }
+
+    private function eMcache($handle, Closure $callback)
+    {
+        return \Craft::$app->cache->getOrSet($handle, function () use ($handle, $callback) {
+            return $callback($handle);
+        }, 60 * 60 * 24 * 365);
     }
 
 }
