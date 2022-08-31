@@ -1,11 +1,14 @@
-# Entry Meta
+> Version 3 is now out extending metadata capability from entries to all element types!
+> Plugin name was accordingly changed from Entry Meta to Element Meta
 
-This package adds the ability to save schemaless metadata to entries.
+# Element Meta
+
+This package adds the ability to save schemaless metadata to all element types, including custom elements.
 
 ## Why?
 
-Sometimes you'll need to attach additional information to your entry without creating a corresponding field in Craft. 
-Common examples include saving an identifier of the entry in another system, keeping track of post views, or flagging an entry as seeded for later removal. 
+Sometimes you'll need to attach additional information to your element (e.g Entry, Product or Category) without creating a corresponding field in Craft. 
+Common examples include saving an identifier of the element in another system, keeping track of post views, or flagging an element as seeded for later removal. 
 
 One option would be to create a read-only field on Craft using a plugin that allows for hidden/read-only field types.
 However, there are multiple cons to this approach:
@@ -16,10 +19,10 @@ However, there are multiple cons to this approach:
    browser.
 4. It does not allow for ad-hoc data that could pertain to a single post or just some posts, without creating yet
    another field.
-5. It is saved to the `content` table, rather than the `entries` table, where it naturally belongs.
+5. It is saved to the `content` table, rather than the element's root table (e.g `entries`), where it naturally belongs.
 
 Entry metadata offers a more flexible, schemaless alternative, which by-passes the Craft data structure and allows you
-to save metadata in JSON format directly to the `entries` table.
+to save metadata in JSON format directly to the element's root table (e.g `entries` or `commerece_products`).
 
 ## Installation
 
@@ -35,9 +38,32 @@ composer require matfish/craft-entry-meta
 php craft plugin/install entry-meta
 ```
 
+## Initial Setup
+
+Once installed go to the plugin's settings page (Under `Settings` in the control panel).
+
+![Settings Page](https://user-images.githubusercontent.com/1510460/187615962-066465b2-4318-4d81-8de7-f54c1bf0d262.png)
+
+Select the elements you'd like to add metadata to.
+Note that for custom elements (as opposed to Craft's native elements) you would need to provide both the Element class and the Active Record class.
+E.g if you would like to enable metadata on Craft Commerce's products:
+
+Element Class = 'craft\commerce\elements\Product'
+
+Active Record Class = 'craft\commerce\records\Product'
+
+The package will validate both classes to ensure they exist and are children of Element and ActiveRecord respectively.
+
+Once you save the settings the plugin will add the metadata functionality to the relevant elements.
+
+For security reasons the metadata column cannot be dropped from the settings page.
+If you wish to remove it, simply run `ALTER TABLE x DROP COLUMN emMetadata` (replace `x` with the table, e.g `entries`)
+
 ## Usage
 
-`$entry` below refers to an entry element (`craft\elements\Entry`). Note that the element must be already saved in order to use metadata methods.
+`$entry` below refers to an entry element (`craft\elements\Entry`).
+
+Note that the element must be already saved in order to use metadata methods.
 
 Set metadata (will replace existing metadata):
 
@@ -75,7 +101,7 @@ Or using Twig:
 
 ### Query by metadata
 
-You can query by metadata on `craft\records\Entry` using the following methods:
+You can query by metadata on the active record class (e.g `craft\records\Entry`) using the following methods:
 
 #### Filter by metadata
 ```php
@@ -100,16 +126,9 @@ You can search and sort by nested data using the `.` syntax:
 ```php
 Entry::find()->whereMetadata('foo.bar','baz')->orderByMetadata('foobar.baz');
 ```
-### Metadata on entry edit page
+### Metadata on element editor page
 By default metadata is rendered on the sidebar along with Craft's metadata (status, created at, updated at).
-You can disable this behaviour via the plugin settings.
-
-Create a `config\entry-meta.php` file:
-```php
-return [
-   'displayMetadataInCp'=>false
-];
-```
+You can disable this behaviour via the plugin settings page.
 
 ## License
 

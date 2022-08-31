@@ -4,11 +4,10 @@
 namespace matfish\EntryMeta\behaviors;
 
 
-use craft\helpers\Db;
 use matfish\EntryMeta\EntryMeta;
 use yii\base\Behavior;
 
-class EntryActiveQueryBehavior extends Behavior
+class ActiveQueryBehavior extends Behavior
 {
     protected $dbDriver;
 
@@ -51,7 +50,7 @@ class EntryActiveQueryBehavior extends Behavior
         return $this->owner->{$method}($this->_getCondition($key, $value, $operand));
     }
 
-    private function _getCondition($key, $value, $operand)
+    private function _getCondition($key, $value, $operand): string
     {
         $bool = is_bool($value);
         $numeric = is_numeric($value);
@@ -61,7 +60,9 @@ class EntryActiveQueryBehavior extends Behavior
 
         if ($this->dbDriver === self::MYSQL) {
             return "{$keyExpression}{$operand}{$Value}";
-        } else if ($this->dbDriver === self::POSTGRES) {
+        }
+
+        if ($this->dbDriver === self::POSTGRES) {
             if ($bool) {
                 return "{$keyExpression}::boolean is {$Value}";
             }

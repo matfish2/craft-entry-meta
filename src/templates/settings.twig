@@ -1,0 +1,36 @@
+{% import '_includes/forms.twig' as forms %}
+
+{{ forms.checkboxSelectField({
+    first: true,
+    label: 'Enable meta data for the following element types',
+    options:options,
+    name: 'enabledFor',
+    values: settings.enabledFor
+}) }}
+
+{{ forms.editableTableField({
+    label:'Custom Elements',
+    name:'enabledForCustom',
+    cols:[
+        {
+            id:'elementClass',
+            heading:'Element Class',
+            type:'singleline'
+        },
+        {
+            id:'activeRecordClass',
+            heading:'Active Record Class',
+            type:'singleline'
+        }
+    ],
+    allowAdd: true,
+    allowDelete: false,
+    rows:settings.enabledForCustom,
+    errors:settings.errors.enabledForCustom ?? []
+}) }}
+
+{{ forms.checkboxField({
+    label:'Display metadata on Element Editor?',
+    name:'displayMetadataInCp',
+    checked:settings.displayMetadataInCp
+}) }}

@@ -5,28 +5,31 @@ namespace matfish\EntryMeta\migrations;
 use Craft;
 use craft\db\Migration;
 use matfish\EntryMeta\EntryMeta;
+use matfish\EntryMeta\services\MetadataTableDetector;
 
 class Install extends Migration
 {
     public function safeUp()
     {
-        if (!$this->_columnExists()) {
-            echo "> Adding column " . EntryMeta::COLUMN_NAME . " to entries table..." . PHP_EOL;
-            $columnType = Craft::$app->db->driverName==='pgsql' ? 'jsonb' : 'text';
-            Craft::$app->db->createCommand()->addColumn("{{%entries}}", EntryMeta::COLUMN_NAME, $columnType)->execute();
-        }
     }
 
     public function safeDown()
     {
-        if ($this->_columnExists()) {
-            echo "> Removing column " . EntryMeta::COLUMN_NAME . " from entries table..." . PHP_EOL;
-            Craft::$app->db->createCommand()->dropColumn("{{%entries}}", EntryMeta::COLUMN_NAME)->execute();
+        $activeRecordClasses = EntryMeta::getInstance()->getEnabledActiveRecords();
+
+        foreach ($activeRecordClasses as $ar) {
+            $table = (new MetadataTableDetector())->detect($ar);
+
+            if ($this->_columnExists($table)) {
+                echo "> Removing column " . EntryMeta::COLUMN_NAME . " from entries table..." . PHP_EOL;
+                Craft::$app->db->createCommand()->dropColumn($table, EntryMeta::COLUMN_NAME)->execute();
+            }
         }
+
     }
 
-    private function _columnExists(): bool
+    private function _columnExists($table): bool
     {
-        return Craft::$app->db->columnExists("{{%entries}}", EntryMeta::COLUMN_NAME);
+        return Craft::$app->db->columnExists($table, EntryMeta::COLUMN_NAME);
     }
 }
