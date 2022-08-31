@@ -1,8 +1,8 @@
 # Release Notes for Entry Meta
 
 ## 3.0.0 - 2022-08-31
-### Added
 > {note} Breaking Change. See README for quick migration
+### Added
 - Craft 4: Extend functionality to allow for all element types [#3](https://github.com/matfish2/craft-entry-meta/issues/3)
 
 ## 2.0.1 - 2022-06-08
