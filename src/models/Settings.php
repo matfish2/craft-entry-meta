@@ -25,9 +25,9 @@ class Settings extends Model
                     }
 
                     if (!class_exists($val[1])) {
-                        $this->addError($attr,"Active Record Class {$val[0]} does not exist");
+                        $this->addError($attr,"Active Record Class {$val[1]} does not exist");
                     } elseif (!is_subclass_of($val[1],ActiveRecord::class)) {
-                        $this->addError($attr,"Class {$val[0]} is not an Active Record Class");
+                        $this->addError($attr,"Class {$val[1]} is not an Active Record Class");
                     }
                 }
             }]

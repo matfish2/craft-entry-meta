@@ -1,6 +1,10 @@
 # Release Notes for Entry Meta
 
+## 1.1.2 - 2022-08-31
+- Fix validation message
+
 ## 1.1.1 - 2022-08-31
+> {note} Breaking Change. See README for quick migration
 ### Added
 - Craft 3: Extend functionality to allow for all element types
 
@@ -8,8 +12,8 @@
 ### Added
 - Cache enabled elements
 
-> {note} Breaking Change. See README for quick migration
 ## 3.0.0 - 2022-08-31
+> {note} Breaking Change. See README for quick migration
 ### Added
 - Craft 4: Extend functionality to allow for all element types [#3](https://github.com/matfish2/craft-entry-meta/issues/3)
 
