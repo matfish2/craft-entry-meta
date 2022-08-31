@@ -68,7 +68,7 @@ Note that the element must be already saved in order to use metadata methods.
 Set metadata (will replace existing metadata):
 
 ```php
-$entry->setEntryMetadata([
+$entry->setElementMetadata([
     'foo'=>'bar'
 ]);
 ```
@@ -76,7 +76,7 @@ $entry->setEntryMetadata([
 Add to existing metadata, or replace an existing value:
 
 ```php
-$entry->addEntryMetadata([
+$entry->addElementMetadata([
     'a'=>1
 ]);
 ```
@@ -84,19 +84,19 @@ $entry->addEntryMetadata([
 Get all metadata of an entry:
 
 ```php
-$entry->getEntryMetadata();   
+$entry->getElementMetadata();   
 ```
 
 Get a specific key value:
 
 ```php
-$entry->getEntryMetadata('foo');   
+$entry->getElementMetadata('foo');   
 ```
 
 Or using Twig:
 
 ```twig
-{{entry.getEntryMetadata('foo')}}
+{{entry.getElementMetadata('foo')}}
 ```
 
 ### Query by metadata
