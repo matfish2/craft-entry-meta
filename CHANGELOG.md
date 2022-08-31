@@ -1,5 +1,9 @@
 # Release Notes for Entry Meta
 
+## 3.0.1 - 2022-08-31
+### Added
+- Cache enabled elements
+
 ## 3.0.0 - 2022-08-31
 > {note} Breaking Change. See README for quick migration
 ### Added
