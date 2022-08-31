@@ -1,5 +1,9 @@
 # Release Notes for Entry Meta
 
+## 3.0.2 - 2022-08-31
+### Fixed
+- Fixed validation message
+
 ## 3.0.1 - 2022-08-31
 ### Added
 - Cache enabled elements
