@@ -21,7 +21,7 @@ However, there are multiple cons to this approach:
    another field.
 5. It is saved to the `content` table, rather than the element's root table (e.g `entries`), where it naturally belongs.
 
-Entry metadata offers a more flexible, schemaless alternative, which by-passes the Craft data structure and allows you
+Element Meta offers a more flexible, schemaless alternative, which by-passes the Craft data structure and allows you
 to save metadata in JSON format directly to the element's root table (e.g `entries` or `commerece_products`).
 
 ## Installation
@@ -48,15 +48,15 @@ Select the elements you'd like to add metadata to.
 Note that for custom elements (as opposed to Craft's native elements) you would need to provide both the Element class and the Active Record class.
 E.g if you would like to enable metadata on Craft Commerce's products:
 
-Element Class = 'craft\commerce\elements\Product'
+Element Class = `craft\commerce\elements\Product`
 
-Active Record Class = 'craft\commerce\records\Product'
+Active Record Class = `craft\commerce\records\Product`
 
 The package will validate both classes to ensure they exist and are children of Element and ActiveRecord respectively.
 
 Once you save the settings the plugin will add the metadata functionality to the relevant elements.
 
-For security reasons the metadata column cannot be dropped from the settings page.
+> **_NOTE:_** For security reasons the metadata column cannot be dropped from the settings page.
 If you wish to remove it, simply run `ALTER TABLE x DROP COLUMN emMetadata` (replace `x` with the table, e.g `entries`)
 
 ## Usage
