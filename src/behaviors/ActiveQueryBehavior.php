@@ -45,6 +45,14 @@ class ActiveQueryBehavior extends Behavior
         return $this->owner->orderBy([$keyExpression => $dir]);
     }
 
+    public function hasMetadata($key = null) {
+        return $this->_whereMetadata($key,null,' IS NOT ','where');
+    }
+
+    public function doesntHaveMetadata($key = null) {
+        return $this->_whereMetadata($key,null,' IS ','where');
+    }
+
     private function _whereMetadata($key, $value, $operand, $method)
     {
         return $this->owner->{$method}($this->_getCondition($key, $value, $operand));
@@ -75,9 +83,14 @@ class ActiveQueryBehavior extends Behavior
         }
     }
 
-    private function _getKeyExpression($key, $cast = null)
+    private function _getKeyExpression($key, $cast = null): string
     {
         $column = EntryMeta::COLUMN_NAME;
+
+        if (is_null($key)) {
+            return $column;
+        }
+
         $Key = $this->_transformKey($key);
 
         if ($this->dbDriver === self::MYSQL) {
@@ -99,6 +112,10 @@ class ActiveQueryBehavior extends Behavior
 
     private function _transformValue($value)
     {
+        if (is_null($value)) {
+            return 'NULL';
+        }
+
         if (is_bool($value)) {
             return $value ? 'true' : 'false';
         }

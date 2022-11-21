@@ -1,5 +1,9 @@
 # Release Notes for Entry Meta
 
+## 3.1.0 - 2022-11-21
+### Added
+- Added existence filters
+
 ## 3.0.2 - 2022-08-31
 ### Fixed
 - Fixed validation message

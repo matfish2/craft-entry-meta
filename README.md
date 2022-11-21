@@ -104,6 +104,7 @@ Or using Twig:
 You can query by metadata on the active record class (e.g `craft\records\Entry`) using the following methods:
 
 #### Filter by metadata
+##### Value
 ```php
 Entry::find()->whereMetadata('foo','bar');
 ```
@@ -112,6 +113,23 @@ For more complex queries you can also chain `orWhereMetadata` and `andWhereMetad
 The method defaults to the `=` operand, which you can override on the third argument. E.g:
 ```php
 Entry::find()->whereMetadata('views',0,'>');
+```
+##### Existence
+You can also check for existence of metadata **keys**:
+```php
+Entry::find()->hasMetadata('foo');
+```
+Or, conversely:
+```php
+Entry::find()->doesntHaveMetadata('foo');
+```
+To filter down by the existence of metadata itself, simply omit the key argument:
+```php
+Entry::find()->hasMetadata(); 
+```
+or
+```php
+Entry::find()->doesntHaveMetadata(); 
 ```
 #### Sort by metadata
 ```php
