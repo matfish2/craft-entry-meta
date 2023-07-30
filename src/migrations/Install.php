@@ -25,6 +25,6 @@ class Install extends Migration
 
     public function safeDown()
     {
-        $this->dropTable('{{$elementmeta}}');
+        $this->dropTable('{{%elementmeta}}');
     }
 }
