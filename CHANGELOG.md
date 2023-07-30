@@ -3,7 +3,7 @@
 ## 4.0.0 - 2023-07-30
 > {note} Breaking Change. See [README](https://github.com/matfish2/craft-entry-meta#version-4) for further information
 ### Improved
-- Use dedicated polymorphic table
+- Use a dedicated polymorphic table
 
 ## 3.1.0 - 2022-11-21
 ### Added
