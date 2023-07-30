@@ -55,9 +55,6 @@ The package will validate both classes to ensure they exist and are children of 
 
 Once you save the settings the plugin will add the metadata functionality to the relevant elements.
 
-> **_NOTE:_** For security reasons the metadata column cannot be dropped from the settings page.
-If you wish to remove it, simply run `ALTER TABLE x DROP COLUMN emMetadata` (replace `x` with the table, e.g `entries`)
-
 ## Usage
 
 `$entry` below refers to an entry element (`craft\elements\Entry`).
