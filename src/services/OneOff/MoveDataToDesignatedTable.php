@@ -8,6 +8,8 @@ use matfish\EntryMeta\records\ElementMeta;
 
 class MoveDataToDesignatedTable
 {
+    public const COLUMN_NAME = 'emMetadata';
+
     public function run()
     {
         $enabled = EntryMeta::getInstance()->getAllEnabled();
@@ -16,8 +18,8 @@ class MoveDataToDesignatedTable
             [$activeRecordClass, $elementClass] = $type;
             $tableName = $activeRecordClass::getTableSchema()->name;
 
-            if (Craft::$app->db->columnExists($tableName, EntryMeta::COLUMN_NAME)) {
-                $records = $activeRecordClass::find()->where(EntryMeta::COLUMN_NAME . ' IS NOT NULL')->all();
+            if (Craft::$app->db->columnExists($tableName, self::COLUMN_NAME)) {
+                $records = $activeRecordClass::find()->where(self::COLUMN_NAME . ' IS NOT NULL')->all();
 
                 foreach ($records as $record) {
                     if (!$this->exists($record->id, $elementClass)) {
@@ -35,10 +37,10 @@ class MoveDataToDesignatedTable
     public function exists($id, $class): bool
     {
         return ElementMeta::find()->where([
-            'elementId' => $id
-        ])->andWhere([
-            'elementType' => $class
-        ])
-            ->count() > 0;
+                'elementId' => $id
+            ])->andWhere([
+                'elementType' => $class
+            ])
+                ->count() > 0;
     }
 }

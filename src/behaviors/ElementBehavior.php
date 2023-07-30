@@ -10,18 +10,6 @@ use yii\db\Exception;
 
 class ElementBehavior extends Behavior
 {
-    protected string $table;
-
-    /**
-     * ElementBehavior constructor.
-     * @param string $table
-     */
-    public function __construct(string $table)
-    {
-        parent::__construct();
-        $this->table = $table;
-    }
-
     /**
      * @throws Exception
      * @throws \JsonException

@@ -14,8 +14,6 @@ use matfish\EntryMeta\behaviors\ActiveQueryBehavior;
 use matfish\EntryMeta\behaviors\ElementBehavior;
 use matfish\EntryMeta\models\Settings;
 use matfish\EntryMeta\services\ClassesMap;
-use matfish\EntryMeta\services\MetadataColumnMigrator;
-use matfish\EntryMeta\services\MetadataTableDetector;
 use matfish\EntryMeta\twig\EntryMetaExtension;
 use yii\base\Event;
 use craft\base\Model;
@@ -23,8 +21,6 @@ use yii\db\Exception;
 
 class EntryMeta extends Plugin
 {
-    public const COLUMN_NAME = 'emMetadata';
-
     public string $schemaVersion = '1.0.1';
 
     public bool $hasCpSettings = true;
@@ -185,9 +181,7 @@ class EntryMeta extends Plugin
             $elClass = get_class($element);
 
             if (in_array($elClass, $this->getEnabledElements(), true)) {
-                $arClass = $this->getActiveRecordFromElementClass($elClass);
-                $table = (new MetadataTableDetector())->detect($arClass);
-                $element->attachBehavior('metadata', new ElementBehavior($table));
+                $element->attachBehavior('metadata', new ElementBehavior());
             }
         });
 
