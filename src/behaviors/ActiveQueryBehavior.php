@@ -6,6 +6,7 @@ namespace matfish\EntryMeta\behaviors;
 
 use matfish\EntryMeta\EntryMeta;
 use yii\base\Behavior;
+use yii\base\Exception;
 
 class ActiveQueryBehavior extends Behavior
 {
@@ -14,11 +15,33 @@ class ActiveQueryBehavior extends Behavior
     const MYSQL = 'mysql';
     const POSTGRES = 'pgsql';
 
+    /**
+     * @throws Exception
+     */
     public function __construct()
     {
         parent::__construct();
 
         $this->dbDriver = \Craft::$app->db->driverName;
+    }
+
+    public function joinMetadata()
+    {
+        $table = $this->owner->getAlias();
+        $activeRecordClass = $this->owner->modelClass;
+        $lookup = EntryMeta::getInstance()->getAllEnabled();
+        $current = array_values(array_filter($lookup, static function ($row) use ($activeRecordClass) {
+            return $row[0] === $activeRecordClass;
+        }));
+
+        if (count($current) === 0) {
+            throw new Exception("Could not find element class for active record class " . $activeRecordClass);
+        }
+
+
+        $elementClass = str_replace('\\','\\\\',$current[0][1]);
+
+        return $this->owner->join('LEFT JOIN', '{{%elementmeta}}', "{{%elementmeta}}.[[elementId]]=$table.[[id]] AND {{%elementmeta}}.[[elementType]]='$elementClass'");
     }
 
     public function whereMetadata($key, $value, $operand = '=')
@@ -45,12 +68,14 @@ class ActiveQueryBehavior extends Behavior
         return $this->owner->orderBy([$keyExpression => $dir]);
     }
 
-    public function hasMetadata($key = null) {
-        return $this->_whereMetadata($key,null,' IS NOT ','where');
+    public function hasMetadata($key = null)
+    {
+        return $this->_whereMetadata($key, null, ' IS NOT ', 'where');
     }
 
-    public function doesntHaveMetadata($key = null) {
-        return $this->_whereMetadata($key,null,' IS ','where');
+    public function doesntHaveMetadata($key = null)
+    {
+        return $this->_whereMetadata($key, null, ' IS ', 'where');
     }
 
     private function _whereMetadata($key, $value, $operand, $method)
@@ -85,7 +110,7 @@ class ActiveQueryBehavior extends Behavior
 
     private function _getKeyExpression($key, $cast = null): string
     {
-        $column = EntryMeta::COLUMN_NAME;
+        $column = '{{%elementmeta}}.[[data]]';
 
         if (is_null($key)) {
             return $column;
@@ -101,7 +126,7 @@ class ActiveQueryBehavior extends Behavior
         } else if ($this->dbDriver === self::POSTGRES) {
             $exp = "({$column}{$Key})";
             if ($cast) {
-                $exp.= "::{$cast}";
+                $exp .= "::{$cast}";
             }
         } else {
             throw new \Exception("Unsupported database driver {$this->dbDriver}");

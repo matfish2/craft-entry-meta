@@ -1,6 +1,5 @@
-> Version 3 is now out (for Craft 4. Craft 3 version 1.1.1) extending metadata capability from entries to all element types!
-> Plugin name was accordingly changed from Entry Meta to Element Meta.
-> To migrate from Version 2 simply change column name on `entries` table from `metadata` to `emMetadata` and select `Entry` on the settings page.
+> Version 4 is now out using a dedicated polymorphic table
+> Please read the relevant section [here](#version4)
 # Element Meta
 
 This package adds the ability to save schemaless metadata to all element types, including custom elements.
@@ -81,6 +80,11 @@ $entry->addElementMetadata([
 ]);
 ```
 
+Delete metadata:
+```php
+$entry->deleteElementMetadata();
+```
+
 Get all metadata of an entry:
 
 ```php
@@ -102,6 +106,9 @@ Or using Twig:
 ### Query by metadata
 
 You can query by metadata on the active record class (e.g `craft\records\Entry`) using the following methods:
+
+> IMPORTANT: When using version 4 or above the user should first join the metadata table.
+> E.g `Entry::find()->joinMetadata()->whereMetadata('foo','bar')`
 
 #### Filter by metadata
 ##### Value
@@ -147,6 +154,51 @@ Entry::find()->whereMetadata('foo.bar','baz')->orderByMetadata('foobar.baz');
 ### Metadata on element editor page
 By default metadata is rendered on the sidebar along with Craft's metadata (status, created at, updated at).
 You can disable this behaviour via the plugin settings page.
+
+## Version 4
+Version 4 introduces an internal change to the way metadata is stored.
+Up until now metadata was saved to an additional `emMetadata` column on the respective tables (e.g `entries`).
+This was replaced in version 4 with a single polymorphic table that stores all metadata.
+Data migration from version 3 should be fully automated.
+
+For extra caution the old `emMetadata` column is not dropped automatically. 
+After updating the version in production, run the following query to get the count for each element type:
+```
+select elementType, count(*) FROM [prefix]_elementmeta
+GROUP BY 1
+```
+Then, for each individual table run:
+```
+SELECT count(*) FROM [table] WHERE emMetadata IS NOT NULL
+```
+The numbers should match.
+
+Then to verify the data is the same run this for each individual table:
+```
+SELECT count(*) FROM [table] 
+JOIN elementmeta
+ON [table].id=elementmeta.elementId
+AND elementmeta.elementType='[elementClass]'
+WHERE [table].emMetadata=elementmeta.data
+```
+e.g:
+```
+SELECT count(*) FROM mf_categories
+JOIN mf_elementmeta
+ON  mf_categories.id=mf_elementmeta.elementId
+AND mf_elementmeta.elementType='craft\\elements\\Category'
+WHERE mf_categories.emMetadata=mf_elementmeta.data
+```
+The numbers should match again.
+
+**Once you have verified that ALL metadata was migrated correctly,** you can drop the column(s) on the respective tables.
+
+You may also need to re-enable native elements (e.g entry, category etc.) in the settings page.
+
+In terms of public API the only breaking change is that one should join the metadata table using `->joinMetadata()` before querying the active records.
+In addition, a `deleteElementMetadata` method was added.
+
+If you run into any trouble during migration please open an issue or write to me at `matfish2@gmail.com` and I'll do my best to resolve ASAP.
 
 ## License
 

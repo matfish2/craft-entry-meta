@@ -2,10 +2,11 @@
 
 namespace matfish\EntryMeta\behaviors;
 
-use Craft;
 use craft\db\Query;
 use matfish\EntryMeta\EntryMeta;
+use matfish\EntryMeta\records\ElementMeta;
 use yii\base\Behavior;
+use yii\db\Exception;
 
 class ElementBehavior extends Behavior
 {
@@ -21,18 +22,35 @@ class ElementBehavior extends Behavior
         $this->table = $table;
     }
 
-    public function setElementMetadata(array $data)
+    /**
+     * @throws Exception
+     * @throws \JsonException
+     */
+    public function setElementMetadata(array $data): void
     {
         $this->_saveMetadata($data);
     }
 
-    public function addElementMetadata(array $data)
+    public function deleteElementMetadata(): void
+    {
+        $record = $this->_getNewOrExistingRecord();
+        $record->delete();
+    }
+
+    /**
+     * @throws Exception
+     * @throws \JsonException
+     */
+    public function addElementMetadata(array $data): void
     {
         $current = $this->getElementMetadata();
 
         $this->_saveMetadata(array_merge($current, $data));
     }
 
+    /**
+     * @throws \JsonException
+     */
     public function getElementMetadata($key = null)
     {
         $meta = $this->_getElementMetadata();
@@ -40,17 +58,45 @@ class ElementBehavior extends Behavior
         return $key ? ($meta[$key] ?? null) : $meta;
     }
 
-    private function _getElementMetadata()
+    /**
+     * @throws \JsonException
+     */
+    private function _getElementMetadata(): array
     {
-        $current = (new Query)->select([EntryMeta::COLUMN_NAME])->from($this->table)->where(['id' => $this->owner->id])->all();
-        $res = $current[0][EntryMeta::COLUMN_NAME];
+        $current = ElementMeta::find()->where([
+            'elementId' => $this->owner->id
+        ])->andWhere([
+            'elementType' => get_class($this->owner)
+        ])
+            ->all();
+
+        $res = $current ? $current[0]->data : null;
 
         return $res ? json_decode($res, true, 512, JSON_THROW_ON_ERROR) : [];
     }
 
+    private function _getNewOrExistingRecord(): ElementMeta
+    {
+        $record = ElementMeta::find()->where([
+            'elementId' => $this->owner->id
+        ])->andWhere([
+            'elementType' => get_class($this->owner)
+        ])
+            ->all();
+
+        return $record ? $record[0] : new ElementMeta();
+    }
+
+    /**
+     * @throws Exception
+     * @throws \JsonException
+     */
     private function _saveMetadata(array $data): void
     {
-        $meta = json_encode($data);
-        Craft::$app->db->createCommand("UPDATE {$this->table} set " . EntryMeta::COLUMN_NAME . "='{$meta}' WHERE [[id]]={$this->owner->id}")->execute();
+        $r = $this->_getNewOrExistingRecord();
+        $r->elementId = $this->owner->id;
+        $r->elementType = get_class($this->owner);
+        $r->data = json_encode($data, JSON_THROW_ON_ERROR);;
+        $r->save();
     }
 }

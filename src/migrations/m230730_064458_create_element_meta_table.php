@@ -4,12 +4,17 @@ namespace matfish\EntryMeta\migrations;
 
 use Craft;
 use craft\db\Migration;
-use matfish\EntryMeta\EntryMeta;
-use matfish\EntryMeta\services\MetadataTableDetector;
+use matfish\EntryMeta\services\OneOff\MoveDataToDesignatedTable;
 
-class Install extends Migration
+/**
+ * m230730_064458_create_element_meta_table migration.
+ */
+class m230730_064458_create_element_meta_table extends Migration
 {
-    public function safeUp()
+    /**
+     * @inheritdoc
+     */
+    public function safeUp(): bool
     {
         $this->createTable('{{%elementmeta}}', [
             'id' => $this->primaryKey()->notNull(),
@@ -21,10 +26,18 @@ class Install extends Migration
         ]);
 
         $this->createIndex('unique_element', '{{%elementmeta}}', ['elementType', 'elementId'], true);
+
+        (new MoveDataToDesignatedTable())->run();
+
+        return true;
     }
 
-    public function safeDown()
+    /**
+     * @inheritdoc
+     */
+    public function safeDown(): bool
     {
-        $this->dropTable('{{$elementmeta}}');
+        echo "m230730_064458_create_element_meta_table cannot be reverted.\n";
+        return false;
     }
 }

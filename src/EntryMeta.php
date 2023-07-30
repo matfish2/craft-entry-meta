@@ -8,7 +8,6 @@ use craft\base\Element;
 use craft\base\Plugin;
 use craft\db\ActiveQuery;
 use craft\elements\db\ElementQuery;
-use craft\elements\Entry;
 use craft\events\DefineHtmlEvent;
 use craft\events\PopulateElementEvent;
 use matfish\EntryMeta\behaviors\ActiveQueryBehavior;
@@ -25,6 +24,8 @@ use yii\db\Exception;
 class EntryMeta extends Plugin
 {
     public const COLUMN_NAME = 'emMetadata';
+
+    public string $schemaVersion = '1.0.1';
 
     public bool $hasCpSettings = true;
 
@@ -84,12 +85,7 @@ class EntryMeta extends Plugin
         $enabled = $this->getEnabled();
 
         foreach ($options as &$option) {
-            if (in_array($option['value'], $enabled, true)) {
-                $option['checked'] = true;
-                $option['disabled'] = true;
-            } else {
-                $option['checked'] = false;
-            }
+            $option['checked'] = in_array($option['value'], $enabled, true);
         }
 
         return $options;
@@ -98,36 +94,7 @@ class EntryMeta extends Plugin
     protected function getEnabled(): array
     {
         return $this->eMcache('emEnabled', function () {
-            $res = [];
-            $migrator = new MetadataColumnMigrator();
-            $detector = new MetadataTableDetector();
-            foreach (array_keys(ClassesMap::LOOK_UP) as $key) {
-
-                try {
-                    $table = $detector->detect($key);
-                } catch (\Exception $e) {
-                    continue;
-                }
-
-                if ($migrator->columnExists($table)) {
-                    $res[] = $key;
-                }
-            }
-
-            return $res;
-        });
-    }
-
-    private function getActiveRecordFromElementClass($elClass)
-    {
-        return $this->eMcache('emActiveRecordFromElementClass' . $elClass, function () use ($elClass) {
-            foreach ($this->getAllEnabled() as $val) {
-                if ($val[1] === $elClass) {
-                    return $val[0];
-                }
-            }
-
-            throw new Exception("Cannot retrieve active record class for element {$elClass}");
+            return $this->settings->enabledFor;
         });
     }
 
@@ -148,17 +115,27 @@ class EntryMeta extends Plugin
         });
     }
 
+    private function getActiveRecordFromElementClass($elClass)
+    {
+        return $this->eMcache('emActiveRecordFromElementClass' . $elClass, function () use ($elClass) {
+            foreach ($this->getAllEnabled() as $val) {
+                if ($val[1] === $elClass) {
+                    return $val[0];
+                }
+            }
+
+            throw new Exception("Cannot retrieve active record class for element {$elClass}");
+        });
+    }
+
+
     public function getEnabledActiveRecords(): array
     {
         return $this->eMcache('emEnabledActiveRecords', function () {
             $res = [];
 
-            foreach ($this->getEnabled() as $key) {
-                $res[] = ClassesMap::LOOK_UP[$key][0];
-            }
-
-            foreach ($this->settings->enabledForCustom as $val) {
-                $res[] = $val[1];
+            foreach ($this->getAllEnabled() as $row) {
+                $res[] = $row[0];
             }
 
             return $res;
@@ -171,12 +148,8 @@ class EntryMeta extends Plugin
         return $this->eMcache('emEnabledElements', function () {
             $res = [];
 
-            foreach ($this->getEnabled() as $key) {
-                $res[] = ClassesMap::LOOK_UP[$key][1];
-            }
-
-            foreach ($this->settings->enabledForCustom as $val) {
-                $res[] = $val[0];
+            foreach ($this->getAllEnabled() as $row) {
+                  $res[] = $row[1];
             }
 
             return $res;
@@ -185,21 +158,6 @@ class EntryMeta extends Plugin
 
     public function afterSaveSettings(): void
     {
-        $migrator = new MetadataColumnMigrator();
-        $detector = new MetadataTableDetector();
-
-        foreach ($this->settings->enabledFor as $key) {
-            $table = $detector->detect($key);
-
-            $migrator->add($table);
-        }
-
-        foreach ($this->settings->enabledForCustom as $val) {
-            $table = $detector->detect($val[1]);
-
-            $migrator->add($table);
-        }
-
         $cache = \Craft::$app->cache;
         $cache->delete('emEnabledElements');
         $cache->delete('emEnabledActiveRecords');
@@ -252,6 +210,7 @@ class EntryMeta extends Plugin
                     $template = Craft::$app->view->renderTemplate('entry-meta/_meta', [
                         'data' => $meta
                     ]);
+
                     $event->html .= $template;
                 }
             );
