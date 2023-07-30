@@ -102,10 +102,14 @@ Or using Twig:
 
 ### Query by metadata
 
-You can query by metadata on the active record class (e.g `craft\records\Entry`) using the following methods:
+You can query by metadata on the active record class (e.g `craft\records\Entry`) using the methods detailed below.
 
-> IMPORTANT: When using version 4 or above the user should first join the metadata table.
-> E.g `Entry::find()->joinMetadata()->whereMetadata('foo','bar')`
+When using version 4 or above the user should first join the metadata table.
+E.g 
+```php
+Entry::find()->joinMetadata()->whereMetadata('foo','bar')
+```
+This is a left join, so it doesn't affect query results, just adds the metadata column. 
 
 #### Filter by metadata
 ##### Value
