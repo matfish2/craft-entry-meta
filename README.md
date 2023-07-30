@@ -1,5 +1,5 @@
-> Version 4 is now out using a dedicated polymorphic table
-> Please read the relevant section [here](#version-4)
+> Version 4 is now out using a dedicated polymorphic table.
+> If you are migrating from version 3, please read the relevant section [here](#version-4)
 # Element Meta
 
 This package adds the ability to save schemaless metadata to all element types, including custom elements.
