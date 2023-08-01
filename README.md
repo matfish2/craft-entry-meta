@@ -203,7 +203,7 @@ If you run into any trouble during migration please open an issue or write to me
 
 ## License
 
-You can try Entry Meta in a development environment for as long as you like. Once your site goes live, you are required
+You can try Element Meta in a development environment for as long as you like. Once your site goes live, you are required
 to purchase a license for the plugin. License is purchasable through
 the [Craft Plugin Store](https://plugins.craftcms.com/entry-meta).
 
