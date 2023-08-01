@@ -21,7 +21,7 @@ However, there are multiple cons to this approach:
 5. It is saved to the `content` table, rather than the element's root table (e.g `entries`), where it naturally belongs.
 
 Element Meta offers a more flexible, schemaless alternative, which by-passes the Craft data structure and allows you
-to save metadata in JSON format directly to the element's root table (e.g `entries` or `commerece_products`).
+to save metadata in JSON format to a designated polymorphic table.
 
 ## Installation
 
