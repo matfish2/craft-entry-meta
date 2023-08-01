@@ -18,7 +18,7 @@ However, there are multiple cons to this approach:
    browser.
 4. It does not allow for ad-hoc data that could pertain to a single post or just some posts, without creating yet
    another field.
-5. It is saved to the `content` table, rather than the element's root table (e.g `entries`), where it naturally belongs.
+5. It is saved to the `content` table, which is not its natural habitat.
 
 Element Meta offers a more flexible, schemaless alternative, which by-passes the Craft data structure and allows you
 to save metadata in JSON format to a designated polymorphic table.
