@@ -1,5 +1,5 @@
 > Version 4 is now out using a dedicated polymorphic table.
-> If you are migrating from version 3, please read the relevant section [here](#version-4)
+> If you are migrating from version 3, please read the relevant section [here](#migrating-to-version-4)
 # Element Meta
 
 This package adds the ability to save schemaless metadata to all element types, including custom elements.
@@ -156,7 +156,7 @@ Entry::find()->whereMetadata('foo.bar','baz')->orderByMetadata('foobar.baz');
 By default metadata is rendered on the sidebar along with Craft's metadata (status, created at, updated at).
 You can disable this behaviour via the plugin settings page.
 
-## Version 4
+## Migrating to version 4 
 Version 4 introduces an internal change to the way metadata is stored.
 Up until now metadata was saved to an additional `emMetadata` column on the respective tables (e.g `entries`).
 This was replaced in version 4 with a single polymorphic table that stores all metadata.

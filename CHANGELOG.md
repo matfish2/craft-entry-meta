@@ -1,7 +1,7 @@
 # Release Notes for Element Meta
 
 ## 4.0.0 - 2023-07-30
-> {note} Breaking Change. See [README](https://github.com/matfish2/craft-entry-meta#version-4) for further information
+> {note} Breaking Change. See [README](https://github.com/matfish2/craft-entry-meta#migrating-to-version-4) for further information
 ### Improved
 - Use a dedicated polymorphic table
 
