@@ -1,5 +1,9 @@
 # Release Notes for Element Meta
 
+## 4.1.0 - 2024-01-26
+### Fixed
+- Install migration: use `dateTime()->notNull()` instead of `timestamp()`
+
 ## 4.0.0 - 2023-07-30
 > {note} Breaking Change. See [README](https://github.com/matfish2/craft-entry-meta#migrating-to-version-4) for further information
 ### Improved

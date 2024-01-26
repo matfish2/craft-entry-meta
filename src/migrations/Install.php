@@ -16,8 +16,8 @@ class Install extends Migration
             'elementType' => $this->string()->notNull(),
             'elementId' => $this->integer()->notNull(),
             'data' => $this->text()->notNull(),
-            'dateCreated' => $this->timestamp(),
-            'dateUpdated' => $this->timestamp()
+            'dateCreated' => $this->dateTime()->notNull(),
+            'dateUpdated' => $this->dateTime()->notNull()
         ]);
 
         $this->createIndex('unique_element', '{{%elementmeta}}', ['elementType', 'elementId'], true);
