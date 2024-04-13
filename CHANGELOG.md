@@ -1,5 +1,8 @@
 # Release Notes for Element Meta
 
+## 5.0.0 - 2024-04-13
+- Craft 5: Initial Release
+
 ## 4.1.0 - 2024-01-26
 ### Fixed
 - Install migration: use `dateTime()->notNull()` instead of `timestamp()`

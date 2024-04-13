@@ -42,8 +42,18 @@ class ElementBehavior extends Behavior
     public function getElementMetadata($key = null)
     {
         $meta = $this->_getElementMetadata();
+        // allow retrieval of nested data point by using a . separator, e.g foo.bar will return 'x' if ['foo'=> 'bar' => 'x']
+        if ($key) {
+            $keys = explode('.', $key);
+            $value = $meta;
+            foreach ($keys as $k) {
+                $value = $value[$k] ?? null;
+            }
+            return $value;
+        }
 
-        return $key ? ($meta[$key] ?? null) : $meta;
+        // return all metadata if no key is provided
+        return $meta;
     }
 
     /**

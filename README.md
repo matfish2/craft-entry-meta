@@ -94,6 +94,11 @@ Get a specific key value:
 $entry->getElementMetadata('foo');   
 ```
 
+Get nested values:
+```php
+$entry->getElementMetadata('foo.bar');   
+```   
+
 Or using Twig:
 
 ```twig
