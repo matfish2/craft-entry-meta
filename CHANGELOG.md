@@ -1,5 +1,9 @@
 # Release Notes for Element Meta
 
+## 5.1.0 - 2024-11-04
+### Added
+- Craft 5: Add support for element queries including twig. [discussion](https://github.com/matfish2/craft-entry-meta/discussions/6#discussioncomment-11141312)
+
 ## 5.0.0 - 2024-04-13
 - Craft 5: Initial Release
 

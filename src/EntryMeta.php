@@ -18,6 +18,8 @@ use matfish\EntryMeta\twig\EntryMetaExtension;
 use yii\base\Event;
 use craft\base\Model;
 use yii\db\Exception;
+use matfish\EntryMeta\behaviors\ElementQueryBehavior;
+use craft\events\DefineBehaviorsEvent;
 
 class EntryMeta extends Plugin
 {
@@ -111,7 +113,7 @@ class EntryMeta extends Plugin
         });
     }
 
-    private function getActiveRecordFromElementClass($elClass)
+    public function getActiveRecordFromElementClass($elClass)
     {
         return $this->eMcache('emActiveRecordFromElementClass' . $elClass, function () use ($elClass) {
             foreach ($this->getAllEnabled() as $val) {
@@ -185,6 +187,9 @@ class EntryMeta extends Plugin
             }
         });
 
+        Event::on(ElementQuery::class, ElementQuery::EVENT_DEFINE_BEHAVIORS, function (DefineBehaviorsEvent $event) {
+            $event->behaviors[] = ElementQueryBehavior::class;
+        });
     }
 
     private function registerCpMetaHooks(): void

@@ -114,6 +114,16 @@ E.g
 ```php
 Entry::find()->joinMetadata()->whereMetadata('foo','bar')
 ```
+
+You can also use the element query behavior to join the metadata table.
+E.g:
+```php
+craft\elements\Entry::find()->joinMetadata()->whereMetadata('foo','bar')
+```
+or in Twig:
+```twig
+{{ craft.entries().joinMetadata().whereMetadata('foo','bar') }}
+```
 This is a left join, so it doesn't affect query results, just adds the metadata column. 
 
 #### Filter by metadata
