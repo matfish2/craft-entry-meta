@@ -115,7 +115,7 @@ E.g
 Entry::find()->joinMetadata()->whereMetadata('foo','bar')
 ```
 
-You can also use the element query behavior to join the metadata table.
+You can also use an element query instead (e.g `craft\elements\Entry`):
 E.g:
 ```php
 craft\elements\Entry::find()->joinMetadata()->whereMetadata('foo','bar')
