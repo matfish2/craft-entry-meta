@@ -15,6 +15,6 @@ class ElementQueryBehavior extends QueryBehavior
         $table = EntryMeta::getInstance()->getActiveRecordFromElementClass($elementType)::tableName();
         
         return $owner->join('LEFT JOIN', '{{%elementmeta}}', "{{%elementmeta}}.[[elementId]]=$table.[[id]]")
-            ->andWhere(['elementmeta.elementType' => $elementType]);
+            ->andWhere(['or', ['elementmeta.elementType' => $elementType], ['elementmeta.elementType' => null]]);
     }
 }
