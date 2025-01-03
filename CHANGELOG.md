@@ -1,5 +1,9 @@
 # Release Notes for Element Meta
 
+## 5.1.4 - 2025-01-03
+### Fixed
+- Use `SIGNED` cast for MySQL
+
 ## 5.1.3 - 2025-01-03
 ### Fixed
 - Use simple concatenation to avoid added slashes (backported from 5.1.2)

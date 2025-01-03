@@ -34,7 +34,8 @@ abstract class QueryBehavior extends Behavior
 
     public function orderByMetadata($key, $asc = true, $numeric = false)
     {
-        $cast = $numeric ? 'integer' : null;
+        $castType = $this->dbDriver === self::POSTGRES ? 'INTEGER' : 'SIGNED';
+        $cast = $numeric ? $castType : null;
         $dir = $asc ? SORT_ASC : SORT_DESC;
         $keyExpression = $this->_getKeyExpression($key, $cast);
 
