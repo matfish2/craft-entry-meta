@@ -1,5 +1,9 @@
 # Release Notes for Element Meta
 
+## 5.1.2 - 2025-01-03
+### Fixed
+- Fixed special JSON keys issue with MySQL [issue #7](https://github.com/matfish2/craft-entry-meta/issues/7)
+
 ## 5.1.1 - 2024-11-05
 ### Fixed
 - Fixed element query filtering elements that don't have element meta
