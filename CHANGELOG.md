@@ -1,5 +1,9 @@
 # Release Notes for Element Meta
 
+## 5.1.3 - 2025-01-03
+### Fixed
+- Use simple concatenation to avoid added slashes (backported from 5.1.2)
+
 ## 5.1.2 - 2025-01-03
 ### Fixed
 - Fixed special JSON keys issue with MySQL [issue #7](https://github.com/matfish2/craft-entry-meta/issues/7)

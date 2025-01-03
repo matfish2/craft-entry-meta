@@ -144,11 +144,10 @@ abstract class QueryBehavior extends Behavior
                 $key = '->>' . $key;
             }
         } else {
-            // For MySQL, wrap all key segments in double quotes to allow for special keys
-            // https://github.com/matfish2/craft-entry-meta/issues/7
+            // For MySQL, wrap all key segments in double quotes without escape characters
             $segments = explode('.', $key);
-            $segments = array_map(function ($segment) {
-                return "\"{$segment}\"";
+            $segments = array_map(function($segment) {
+                return '"' . $segment . '"';
             }, $segments);
             return implode('.', $segments);
         }
